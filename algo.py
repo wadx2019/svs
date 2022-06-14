@@ -97,7 +97,9 @@ class SVS(Solver):
             x_sub = X[i*1000:(i+1)*1000].copy()
             y_sub = svs(x_sub, self.g)
             print(self.g.name, y_sub.shape)
-            Y = np.vstack((Y, y_sub[:min(y_sub.shape[0],self.cost)]))
+            if y_sub.shape[0] == 0:
+                continue
+            Y = np.vstack((Y, y_sub[:min(y_sub.shape[0], self.cost)]))
         return fd(Y, self.eps) if self.eps else Y
 
 

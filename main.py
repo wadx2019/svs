@@ -8,15 +8,16 @@ from tqdm import tqdm
 
 # Settings
 
-mode = 1 # 0 for performance; 1 for communication cost
+mode = 0 # 0 for performance; 1 for communication cost
 t = 30
 xi = 4
 ss = [20, 40, 60, 80, 100, 120, 140, 160]
 costs = [5, 10, 15, 20, 25]
 epoch = 1
 
-lin_costs = [Linear(0.00015, 0), Linear(0.0005, 0), Linear(0.001, 0),Linear(0.0016, 0), Linear(0.003, 0)]
-quad_costs = [Quaratic(0.000001, 0, 0), Quaratic(0.000002, 0, 0), Quaratic(0.000003, 0, 0), Quaratic(0.000004, 0, 0), Quaratic(0.000008, 0, 0)]
+lin_costs = [Linear(0.00025, 0), Linear(0.0005, 0), Linear(0.001, 0),Linear(0.0016, 0), Linear(0.0025, 0)]
+quad_costs = [Quaratic(0.0000006, 0, 0), Quaratic(0.0000012, 0, 0), Quaratic(0.000002, 0, 0), Quaratic(0.000004, 0, 0),
+              Quaratic(0.000008, 0, 0)]
 
 if __name__=="__main__":
     errors = []
@@ -42,6 +43,9 @@ if __name__=="__main__":
         plt.plot(ss, errors[:, 2], marker='o')
         plt.plot(ss, errors[:, 3], marker='*')
 
+        plt.xlabel("# of machines")
+        plt.ylabel("sketching error")
+
         plt.legend(["l_svs", "q_svs", "efd", "rs"])
         plt.show()
 
@@ -66,6 +70,9 @@ if __name__=="__main__":
         plt.plot(costs, errors[:, 1], marker='^')
         plt.plot(costs, errors[:, 2], marker='o')
         plt.plot(costs, errors[:, 3], marker='*')
+
+        plt.xlabel("communication cost per machine")
+        plt.ylabel("sketching error")
 
         plt.legend(["l_svs", "q_svs", "efd", "rs"])
         plt.show()
