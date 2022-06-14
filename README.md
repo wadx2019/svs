@@ -3,4 +3,4 @@ Re-implementation of [Communication-Efficient Distributed Covariance Sketch, wit
 
 performance：
 
-![err](https://github.com/wadx2019/svs/edit/main/error.png)
+![error](https://github.com/wadx2019/svs/edit/main/error.png)
