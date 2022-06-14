@@ -7,11 +7,11 @@ def svs(X, g):
     n, d = X.shape
     U, dd, V = linalg.svd(X)
     p = g(dd*dd)
+    print(p)
     w = dd / np.sqrt(p)
-    for i in range(min(n,d)):
+    for i in range(min(n, d)):
         if np.random.rand() < p[i]:
             Y.append(w[i]*V[i])
-
     return np.array(Y)
 
 
@@ -33,10 +33,10 @@ def fd(X, eps):
 
 def rs(X, r):
     n, d = X.shape
-    w = np.linalg.norm(X, axis=1)
+    w = np.linalg.norm(X, axis=1)**2
     p = w/np.sum(w)
     index = np.random.choice(np.arange(n), size=r, p=p)
-    return X[index]
+    return X[index] / np.sqrt(r*p[index]).reshape(-1, 1)
 
 def ksvd(X, k):
     U, d, V = linalg.svd(X)
@@ -62,17 +62,11 @@ class RS(Solver):
 
     def run(self, X):
         n, d = X.shape
-        choice = np.random.randint(0, self.s, size=n-self.s)
-        number = [1 + np.sum(choice == i) for i in range(self.s)]
         Y = np.zeros((0, d))
-        number = np.cumsum(number)
-        begin = 0
         for i in range(self.s):
-            end = number[i]
-            x_sub = X[begin:end].copy()
+            x_sub = X[i*1000:(i+1)*1000].copy()
             y_sub = rs(x_sub, min(self.cost, x_sub.shape[0]))
             Y = np.vstack((Y, y_sub))
-            begin = end
         return fd(Y, self.eps) if self.eps else Y
 
 
@@ -83,17 +77,11 @@ class eFD(Solver):
 
     def run(self, X):
         n, d = X.shape
-        choice = np.random.randint(0, self.s, size=n - self.s)
-        number = [1 + np.sum(choice == i) for i in range(self.s)]
         Y = np.zeros((0, d))
-        number = np.cumsum(number)
-        begin = 0
         for i in range(self.s):
-            end = number[i]
-            x_sub = X[begin:end].copy()
+            x_sub = X[i*1000:(i+1)*1000].copy()
             y_sub = ksvd(x_sub, min(self.cost, x_sub.shape[0]))
             Y = np.vstack((Y, y_sub))
-            begin = end
         return fd(Y, self.eps) if self.eps else Y
 
 
@@ -104,17 +92,12 @@ class SVS(Solver):
 
     def run(self, X):
         n, d = X.shape
-        choice = np.random.randint(0, self.s, size=n-self.s)
-        number = [1 + np.sum(choice == i) for i in range(self.s)]
         Y = np.zeros((0, d))
-        number = np.cumsum(number)
-        begin = 0
         for i in range(self.s):
-            end = number[i]
-            x_sub = X[begin:end].copy()
+            x_sub = X[i*1000:(i+1)*1000].copy()
             y_sub = svs(x_sub, self.g)
-            Y = np.vstack((Y, y_sub[:min(self.cost, y_sub.shape[0])]))
-            begin = end
+            print(self.g.name, y_sub.shape)
+            Y = np.vstack((Y, y_sub[:min(y_sub.shape[0],self.cost)]))
         return fd(Y, self.eps) if self.eps else Y
 
 
