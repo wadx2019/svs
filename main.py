@@ -8,6 +8,7 @@ from tqdm import tqdm
 
 # Settings
 
+
 mode = 0 # 0 for performance; 1 for communication cost
 t = 30
 xi = 4
